@@ -1,0 +1,183 @@
+{
+    "enabled": true,
+    "debug": false,
+    "action": "mask",
+    "placeholder_prefix": "__VG_",
+    "session": {
+        "ttl": "1h",
+        "max_mappings": 100000
+    },
+    "patterns": {
+        "keywords": [],
+        "regex": [
+            {
+                "pattern": "sk-[A-Za-z0-9]{48,}",
+                "category": "OPENAI_KEY"
+            },
+            {
+                "pattern": "sk-proj-[A-Za-z0-9]{48,}",
+                "category": "OPENAI_KEY"
+            },
+            {
+                "pattern": "(ghp|gho|ghu|ghs|ghr)_[A-Za-z0-9]{36,}",
+                "category": "GITHUB_TOKEN"
+            },
+            {
+                "pattern": "AKIA[0-9A-Z]{16}",
+                "category": "AWS_ACCESS_KEY"
+            },
+            {
+                "pattern": "sk_live_[A-Za-z0-9]{24,}",
+                "category": "STRIPE_KEY"
+            },
+            {
+                "pattern": "sk_test_[A-Za-z0-9]{24,}",
+                "category": "STRIPE_KEY"
+            },
+            {
+                "pattern": "xox[baprs]-[A-Za-z0-9]{10,48}",
+                "category": "SLACK_TOKEN"
+            },
+            {
+                "pattern": "eyJ[A-Za-z0-9_-]*\\.[A-Za-z0-9_-]{4,}\\.[A-Za-z0-9_-]{4,}",
+                "category": "JWT_TOKEN"
+            },
+            {
+                "pattern": "-----BEGIN (RSA|EC|OPENSSH|DSA|PRIVATE) KEY-----",
+                "category": "PRIVATE_KEY"
+            },
+            {
+                "pattern": "(?:password|passwd|pwd)\\s*[:=]\\s*['\"]?(?![A-Za-z0-9_]{1,30}['\"]?$)[^\\s\"']{6,}",
+                "category": "PASSWORD"
+            },
+            {
+                "pattern": "(?:SECRET_KEY|secret_key|api_secret|app_secret)\\s*=\\s*['\"]?[A-Za-z0-9_\\-]{16,}['\"]?",
+                "category": "SECRET_KEY"
+            },
+            {
+                "pattern": "azurecr\\.io\\/[a-zA-Z0-9._\\-]+",
+                "category": "AZURE_CR"
+            },
+            {
+                "pattern": "hf_[A-Za-z0-9]{20,}",
+                "category": "HUGGINGFACE_TOKEN"
+            },
+            {
+                "pattern": "(?:postgresql|mysql|mongodb|redis|amqp|mqtt)://[^\\s:@]+:[^\\s:@]+@[^\\s]+",
+                "category": "DATABASE_URL"
+            },
+            {
+                "pattern": "ghp_[A-Za-z0-9]{36,}",
+                "category": "GITHUB_CLASSIC_TOKEN"
+            },
+            {
+                "pattern": "npm_[A-Za-z0-9]{36,}",
+                "category": "NPM_TOKEN"
+            },
+            {
+                "pattern": "SG\\.[A-Za-z0-9_\\-]{20,}\\.[A-Za-z0-9_\\-]{20,}",
+                "category": "SENDGRID_KEY"
+            },
+            {
+                "pattern": "glpat-[A-Za-z0-9_\\-]{20,}",
+                "category": "GITLAB_TOKEN"
+            },
+            {
+                "pattern": "ddapi_[A-Za-z0-9]{40}",
+                "category": "DATADOG_API_KEY"
+            },
+            {
+                "pattern": "ddapp_[A-Za-z0-9]{40}",
+                "category": "DATADOG_APP_KEY"
+            },
+            {
+                "pattern": "pul-[A-Za-z0-9]{40,}",
+                "category": "PULUMI_TOKEN"
+            },
+            {
+                "pattern": "https://hooks\\.slack\\.com/services/[A-Za-z0-9]{8,12}/[A-Za-z0-9]{20,40}/[A-Za-z0-9_\\-]{20,}",
+                "category": "SLACK_WEBHOOK"
+            },
+            {
+                "pattern": "Bearer\\s+[A-Za-z0-9_\\-]{20,}",
+                "category": "BEARER_TOKEN"
+            },
+            {
+                "pattern": "AIza[0-9A-Za-z_\\-]{35}",
+                "category": "GCP_API_KEY"
+            },
+            {
+                "pattern": "\"type\":\\s*\"service_account\"",
+                "category": "GCP_SERVICE_ACCOUNT"
+            },
+            {
+                "pattern": "\"private_key_id\":\\s*\"[A-Za-z0-9_\\-]+\"",
+                "category": "GCP_PRIVATE_KEY_ID"
+            },
+            {
+                "pattern": "LTAI[A-Za-z0-9]{12,}",
+                "category": "ALIBABA_ACCESS_KEY"
+            },
+            {
+                "pattern": "AKID[A-Za-z0-9]{16,}",
+                "category": "TENCENT_ACCESS_KEY"
+            },
+            {
+                "pattern": "MII[A-Za-z0-9+/=]{100,}",
+                "category": "PRIVATE_KEY_BODY"
+            },
+            {
+                "pattern": "[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\s*;\\s*[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\\s*;[A-Za-z0-9_~\\-]{30,}",
+                "category": "AZURE_SP_CREDENTIALS"
+            },
+            {
+                "pattern": "(?:AZURE_CLIENT_SECRET|AZURE_CLIENT_CERTIFICATE_PASSWORD)\\s*=\\s*['\"]?[^'\"\\s]{8,}['\"]?",
+                "category": "AZURE_CLIENT_SECRET"
+            }
+        ],
+        "builtin": [
+            "email",
+            "china_phone",
+            "china_id",
+            "uuid",
+            "ipv4",
+            "mac"
+        ],
+        "exclude": [
+            "example.com",
+            "example.org",
+            "example.net",
+            "localhost",
+            "127.0.0.1",
+            "0.0.0.0",
+            "::1",
+            "*.local",
+            "192.168.*.*",
+            "10.*.*.*",
+            "172.16.*.*",
+            "172.17.*.*",
+            "172.18.*.*",
+            "172.19.*.*",
+            "172.20.*.*",
+            "172.21.*.*",
+            "172.22.*.*",
+            "172.23.*.*",
+            "172.24.*.*",
+            "172.25.*.*",
+            "172.26.*.*",
+            "172.27.*.*",
+            "172.28.*.*",
+            "172.29.*.*",
+            "172.30.*.*",
+            "172.31.*.*",
+            "test",
+            "test-*",
+            "*.test",
+            "staging",
+            "fake",
+            "dummy",
+            "placeholder",
+            "your-*"
+        ]
+    }
+}

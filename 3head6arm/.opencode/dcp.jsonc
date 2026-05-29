@@ -1,0 +1,103 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Opencode-DCP/opencode-dynamic-context-pruning/master/dcp.schema.json",
+    // ═══ 基础配置 ═════════════════════════════════════════════════════
+    "enabled": true,
+    "autoUpdate": true,
+    "debug": false,
+    "pruneNotification": "minimal",
+    "pruneNotificationType": "chat",
+    // ═══ 自动策略 ═════════════════════════════════════════════════════
+    "strategies": {
+        "deduplication": {
+            "enabled": true
+        },
+        "purgeErrors": {
+            "enabled": true,
+            "turns": 4
+        }
+    },
+    // ═══ 压缩控制 ═════════════════════════════════════════════════════
+    "compress": {
+        "mode": "range",
+        "permission": "allow",
+        "showCompression": false,
+        "summaryBuffer": true, // 防止压缩级联死循环
+        // 全局回退阈值
+        "maxContextLimit": "50%",
+        "minContextLimit": "20%",
+        // ── 分级阈值 ──────────────────────────────────────────────────────
+        // 策略：有缓存折扣的模型延迟压缩，无缓存的积极压缩，小窗口保守
+        "modelMaxLimits": {
+            // DeepSeek V4 — 1M 窗口，激进缓存折扣 → 延迟压缩保缓存
+            "opencode/deepseek-v4-flash-free": 800000,
+            "deepseek/deepseek-v4-flash": 800000,
+            "deepseek/deepseek-v4-pro": 900000,
+            // GLM (智谱) — 4.5-Air: 128K / 4.7-Flash & 5.x: 200K，无激进缓存 → 适度压缩
+            "zhipuai/glm-4.5-air": 60000,
+            "zhipuai/glm-4.7-flash": 75000,
+            "zhipuai/glm-5": 80000,
+            "zhipuai/glm-5.1": 80000,
+            // MiniMax — M2.7 & M2.5: 200K，无激进缓存
+            "minimax/MiniMax-M2.7": 180000,
+            "minimax/MiniMax-M2.7-highspeed": 180000,
+            "minimax/MiniMax-M2.5": 150000,
+            // Kimi K2.x — 128K / 256K+ 窗口，无激进缓存
+            "moonshotai/kimi-k2-thinking": 80000,
+            "moonshotai/kimi-k2.5": 150000,
+            "moonshotai/kimi-k2.6": 200000
+        },
+        "modelMinLimits": {
+            "opencode/deepseek-v4-flash-free": 50000,
+            "deepseek/deepseek-v4-flash": 50000,
+            "deepseek/deepseek-v4-pro": 80000,
+            "zhipuai/glm-4.5-air": 20000,
+            "zhipuai/glm-4.7-flash": 20000,
+            "zhipuai/glm-5": 25000,
+            "zhipuai/glm-5.1": 25000,
+            "minimax/MiniMax-M2.7": 50000,
+            "minimax/MiniMax-M2.7-highspeed": 50000,
+            "minimax/MiniMax-M2.5": 30000,
+            "moonshotai/kimi-k2-thinking": 20000,
+            "moonshotai/kimi-k2.5": 40000,
+            "moonshotai/kimi-k2.6": 50000
+        },
+        // ── 提醒策略 ───────────────────────────────────────────────────────
+        "nudgeFrequency": 15, // 15 轮提醒一次，降低缓存破坏频率
+        "iterationNudgeThreshold": 15,
+        "nudgeForce": "soft",
+        // ── 锚点保护 ───────────────────────────────────────────────────────
+        "protectUserMessages": true, // 用户消息作为缓存锚点
+        "protectTags": false,
+        "protectedTools": [
+            "mcp__important_context_tool",
+            "task",
+            "todowrite"
+        ]
+    },
+    // ═══ 轮次保护 ═════════════════════════════════════════════════════
+    "turnProtection": {
+        "enabled": true,
+        "turns": 4
+    },
+    // ═══ 任务保护 ═════════════════════════════════════════════════════
+    "commands": {
+        "enabled": true,
+        "protectedTools": [
+            "task",
+            "todo",
+            "question"
+        ]
+    },
+    // ═══ 手动模式 ═════════════════════════════════════════════════════
+    "manualMode": {
+        "enabled": false,
+        "automaticStrategies": true
+    },
+    // ═══ 实验功能 ═════════════════════════════════════════════════════
+    "experimental": {
+        "allowSubAgents": false,
+        "customPrompts": false
+    },
+    // ═══ 文件保护 ═════════════════════════════════════════════════════
+    "protectedFilePatterns": []
+}

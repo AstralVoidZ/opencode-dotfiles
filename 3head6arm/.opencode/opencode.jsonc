@@ -1,0 +1,237 @@
+{
+    "$schema": "https://opencode.ai/config.json",
+    // ═══ 核心模型 ═════════════════════════════════════════════════════
+    "model": "minimax-cn-coding-plan/MiniMax-M2.7",
+    "small_model": "zhipuai/glm-4.7-flash",
+    "default_agent": "build",
+    // ═══ 会话环境 ═════════════════════════════════════════════════════
+    "snapshot": true,
+    "autoupdate": "notify",
+    "lsp": true,
+    "mcp": {
+        "MiniMax": {
+            "type": "local",
+            "command": [
+                "uvx",
+                "minimax-coding-plan-mcp",
+                "-y"
+            ],
+            "environment": {
+                "MINIMAX_API_KEY": "MINIMAX_API_KEY",
+                "MINIMAX_API_HOST": "https://api.minimaxi.com"
+            },
+            "enabled": true,
+            "timeout": 30000
+        }
+    },
+    // ═══ 监听忽略 ═════════════════════════════════════════════════════
+    "watcher": {
+        "ignore": [
+            "node_modules/**",
+            ".venv/**",
+            "venv/**",
+            "__pycache__/**",
+            "dist/**",
+            "build/**",
+            ".next/**",
+            ".git/**",
+            ".cache/**",
+            "tmp/**",
+            "temp/**",
+            ".idea/**",
+            ".vscode/**",
+            "*.lock",
+            "**/*.log",
+            "*.min.js",
+            "*.min.css",
+            "coverage/**"
+        ]
+    },
+    // ═══ 压缩控制 ═════════════════════════════════════════════════════
+    "compaction": {
+        "auto": true,
+        "prune": true,
+        "tail_turns": 4,
+        "preserve_recent_tokens": 64000,
+        "reserved": 10000
+    },
+    // ═══ 工具输出 ═════════════════════════════════════════════════════
+    "tool_output": {
+        "max_lines": 500,
+        "max_bytes": 32768
+    },
+    // ═══ 附件限制 ═════════════════════════════════════════════════════
+    "attachment": {
+        "image": {
+            "auto_resize": true,
+            "max_width": 1024,
+            "max_height": 1024,
+            "max_base64_bytes": 524288
+        }
+    },
+    // ═══ 代理配置 ═════════════════════════════════════════════════════
+    // 两套主代理: MiniMax-2.7 / DeepSeek-V4-Pro，分别对应 build/plan、build++/plan++
+    // MiniMax-M2.7 基准: build/general/explore temp=1.0/top_p=0.95 (官方黄金组合)
+    // DeepSeek-V4-Pro: 通过 .opencode/agents/ 定义代理, variant 控制推理强度
+    "agent": {
+        // ─── 主代理: 基于MiniMax-2.7
+        "build": {
+            "model": "minimax-cn-coding-plan/MiniMax-M2.7",
+            "temperature": 1.0,
+            "top_p": 0.95,
+            "max_tokens": 32768,
+            "steps": 36
+        },
+        "plan": {
+            "model": "minimax-cn-coding-plan/MiniMax-M2.7",
+            "temperature": 0.5,
+            "top_p": 0.9,
+            "max_tokens": 32768,
+            "steps": 20
+        },
+        // ─── 主代理: 基于DeepSeek-V4-Pro
+        "build++": {
+            "model": "deepseek/deepseek-v4-pro",
+            "variant": "thinking",
+            "max_tokens": 32768,
+            "steps": 40
+        },
+        "plan++": {
+            "model": "deepseek/deepseek-v4-pro",
+            "variant": "deep-thinking",
+            "max_tokens": 32768,
+            "steps": 25
+        },
+        // ─── 子代理: 继承主代理model
+        "general": {
+            "temperature": 1.0,
+            "top_p": 0.95,
+            "max_tokens": 32768,
+            "steps": 15
+        },
+        "explore": {
+            "temperature": 0.2,
+            "top_p": 0.8,
+            "max_tokens": 8192,
+            "steps": 10
+        },
+        "title": {
+            "max_tokens": 256,
+            "temperature": 0.1
+        },
+        "summary": {
+            "max_tokens": 4096,
+            "temperature": 0.1
+        },
+        "compaction": {
+            "max_tokens": 8192,
+            "temperature": 0.1
+        }
+    },
+    // ═══ 权限控制 ═════════════════════════════════════════════════════
+    "permission": {
+        "bash": "ask",
+        "task": "ask",
+        "webfetch": "ask",
+        "websearch": "ask",
+        "repo_clone": "ask"
+    },
+    // ═══ 模型选项 ═════════════════════════════════════════════════════
+    // variants: 定义模型的命名配置组合，agent 通过 variant 字段选择
+    // variant 中参数有最高合并优先级: model.options → agent.options → variant
+    // DeepSeek 内置 low/medium/high/max 仅含 reasoningEffort，自定义 variant 可组合 thinking
+    "provider": {
+        "deepseek": {
+            "options": {
+                "baseURL": "https://api.deepseek.com",
+                "apiKey": "{env:DEEPSEEK_API_KEY}",
+                "setCacheKey": true
+            },
+            "models": {
+                "deepseek-v4-pro": {
+                    "variants": {
+                        "thinking": {
+                            "reasoningEffort": "high",
+                            "thinking": {
+                                "type": "enabled"
+                            }
+                        },
+                        "deep-thinking": {
+                            "reasoningEffort": "max",
+                            "thinking": {
+                                "type": "enabled"
+                            }
+                        }
+                    }
+                },
+                "deepseek-v4-flash": {
+                    "variants": {
+                        "thinking": {
+                            "reasoningEffort": "high",
+                            "thinking": {
+                                "type": "enabled"
+                            }
+                        },
+                        "deep-thinking": {
+                            "reasoningEffort": "max",
+                            "thinking": {
+                                "type": "enabled"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "minimax": {
+            "options": {
+                "setCacheKey": true,
+                "apiKey": "{env:MINIMAX_API_KEY}"
+            }
+        },
+        "zhipuai": {
+            "options": {
+                "apiKey": "{env:ZHIPUAI_API_KEY}"
+            },
+            "models": {
+                "glm-5.1": {
+                    "variants": {
+                        "thinking": {
+                            "thinking": {
+                                "type": "enabled"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "moonshotai": {
+            "options": {
+                "apiKey": "{env:MOONSHOTAI_API_KEY}"
+            },
+            "models": {
+                "kimi-k2.6": {
+                    "variants": {
+                        "thinking": {
+                            "thinking": {
+                                "type": "enabled"
+                            }
+                        },
+                        "instant": {
+                            "thinking": {
+                                "type": "disabled"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    // ═══ 插件管控 ═════════════════════════════════════════════════════
+    "plugin": [
+        "@tarquinen/opencode-dcp@latest",
+        "opencode-notify",
+        "opencode-vibeguard",
+        "oh-my-tokens",
+        "opencode-wakatime"
+    ]
+}

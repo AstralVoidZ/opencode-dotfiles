@@ -1,0 +1,6 @@
+logs/
+node_modules/
+profiles/
+package.json
+package-lock.json
+AGENTS.md
